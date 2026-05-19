@@ -1,0 +1,26 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches: [master]
+
+env:
+  DB_USER: ci
+  DB_PASSWORD: ci
+  DB_NAME: ci
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate local compose
+        run: docker compose -f compose.local.yml config --quiet
+
+      - name: Validate Caddy config
+        run: |
+          docker run --rm \
+            -v "$PWD/Caddyfile.local:/etc/caddy/Caddyfile:ro" \
+            caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile
