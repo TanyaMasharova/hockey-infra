@@ -2,12 +2,12 @@
 
 Infrastructure repository for a hockey ticket purchasing application.
 
-Contains Docker Compose stacks, Caddy configuration, deploy scripts and CI/CD for [`https://hockey.zudar.ru`](https://hockey.zudar.ru).
+Contains Docker Compose stacks, Caddy configuration, deploy scripts and CI/CD for the production domain.
 
 Application repositories:
 
-- [`hockey-team`](https://github.com/TanyaMasharova/hockey-team) — Go REST API
-- [`hockey_team_front`](https://github.com/TanyaMasharova/hockey_team_front) — Next.js frontend
+- `hockey-team` — Go REST API
+- `hockey_team_front` — Next.js frontend
 
 ## Repository Structure
 
@@ -16,7 +16,7 @@ hockey-infra/
 ├── compose.local.yml       # Local stack (built from source)
 ├── compose.prod.yml        # Production stack (images from GHCR)
 ├── Caddyfile.local         # Caddy for local development (port 80)
-├── Caddyfile               # Caddy for production (HTTPS, hockey.zudar.ru)
+├── Caddyfile               # Caddy for production (HTTPS)
 ├── .env.example            # Environment variable template for local stack
 ├── .env.prod.example       # Environment variable template for production stack
 └── scripts/
@@ -153,10 +153,10 @@ chmod 600 /home/hockey-deploy/.ssh/authorized_keys
 chown -R hockey-deploy:hockey-deploy /home/hockey-deploy/.ssh
 
 # 3. Log in to GHCR (requires a PAT with read:packages scope)
-su - hockey-deploy -c "echo '<PAT>' | docker login ghcr.io -u TanyaMasharova --password-stdin"
+su - hockey-deploy -c "echo '<PAT>' | docker login ghcr.io -u <github-user> --password-stdin"
 
 # 4. Clone this repository
-su - hockey-deploy -c "git clone https://github.com/TanyaMasharova/hockey-infra.git ~/hockey-infra"
+su - hockey-deploy -c "git clone <hockey-infra-repo-url> ~/hockey-infra"
 
 # 5. Create .env with production secrets
 su - hockey-deploy -c "cp ~/hockey-infra/.env.prod.example ~/hockey-infra/.env"
@@ -166,4 +166,4 @@ su - hockey-deploy -c "cp ~/hockey-infra/.env.prod.example ~/hockey-infra/.env"
 su - hockey-deploy -c "docker compose -f ~/hockey-infra/compose.prod.yml up -d"
 ```
 
-After the first start Caddy will automatically obtain a TLS certificate from Let's Encrypt for `hockey.zudar.ru`.
+After the first start Caddy will automatically obtain a TLS certificate from Let's Encrypt for the configured domain.
