@@ -42,29 +42,26 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
+    networks:
+      default:
+      proxy:
+        aliases:
+          - hockey-backend
 
   frontend:
     image: ghcr.io/tanyamasharova/hockey-front:${FRONTEND_TAG}
     restart: unless-stopped
     depends_on:
       - backend
-
-  caddy:
-    image: caddy:2-alpine
-    ports:
-      - "80:80"
-      - "443:443"
-      - "443:443/udp"
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    restart: unless-stopped
-    depends_on:
-      - backend
-      - frontend
+    networks:
+      default:
+      proxy:
+        aliases:
+          - hockey-frontend
 
 volumes:
   postgres_data:
-  caddy_data:
-  caddy_config:
+
+networks:
+  proxy:
+    external: true
