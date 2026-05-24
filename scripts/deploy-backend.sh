@@ -2,8 +2,11 @@
 set -e
 
 TAG=${1:?usage: deploy-backend.sh <tag>}
-COMPOSE_FILE="$(dirname "$0")/../compose.prod.yml"
-ENV_FILE="$(dirname "$0")/../.env"
+REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+COMPOSE_FILE="$REPO_DIR/compose.prod.yml"
+ENV_FILE="$REPO_DIR/.env"
+
+git -C "$REPO_DIR" pull
 
 sed -i "s/^BACKEND_TAG=.*/BACKEND_TAG=${TAG}/" "$ENV_FILE"
 
