@@ -2,6 +2,7 @@
 set -e
 
 TAG=${1:?usage: deploy-backend.sh <tag>}
+TAG=${TAG#v}
 REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 COMPOSE_FILE="$REPO_DIR/compose.prod.yml"
 ENV_FILE="$REPO_DIR/.env"
